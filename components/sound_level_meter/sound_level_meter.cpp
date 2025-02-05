@@ -209,15 +209,10 @@ void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
     this->count_++;
-
     if (this->count_ == this->update_samples_) {
       float dB = 10 * log10((sum_ + local_sum) / count_);
       dB = this->adjust_dB(dB);
-      this->defer_publish_state(dB + 2000);
-
-      // Log the calculated dB value
-      ESP_LOGI("SoundLevelMeter", "local_sum: %f", local_sum);
-
+      this->defer_publish_state(dB);
       this->sum_ = 0;
       this->count_ = 0;
       local_sum = 0;
