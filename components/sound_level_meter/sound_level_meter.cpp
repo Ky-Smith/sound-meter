@@ -216,7 +216,7 @@ void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
       this->defer_publish_state(dB + 2000);
 
       // Log the calculated dB value
-      ESP_LOGI("SoundLevelMeter", "Calculated dB: %.2f", local_sum);
+      ESP_LOGI("SoundLevelMeter", local_sum, local_sum);
 
       this->sum_ = 0;
       this->count_ = 0;
