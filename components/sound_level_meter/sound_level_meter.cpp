@@ -1,15 +1,9 @@
 #include "sound_level_meter.h"
+#include <fstream>
 
 namespace esphome {
 namespace sound_level_meter {
-
 static const char *const TAG = "sound_level_meter";
-
-// By definition dBFS value of a full-scale sine wave equals to 0.
-// Since the RMS of the full-scale sine wave is 1/sqrt(2), multiplying rms(signal) by sqrt(2)
-// ensures that the formula evaluates to 0 when signal is a full-scale sine wave.
-// This is equivalent to adding DBFS_OFFSET
-// see: https://dsp.stackexchange.com/a/50947/65262
 static constexpr float DBFS_OFFSET = 20 * log10(sqrt(2));
 
 /* SoundLevelMeter */
@@ -213,10 +207,19 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 
 //sound level meter need to make change to save file
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
+  std::ofstream file("buffer_output.txt", std::ios::app);  // Open file in append mode
+  if (!file) {
+    return;  // Handle file open failure
+  }
+
   float local_sum = 0;
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
     this->count_++;
+
+    // Write the buffer value to the file
+    file << buffer[i] << "\n";
+
     if (this->count_ == this->update_samples_) {
       float dB = 10 * log10((sum_ + local_sum) / count_);
       dB = this->adjust_dB(dB);
@@ -226,8 +229,8 @@ void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
       local_sum = 0;
     }
   }
-  ESP_LOGD("buffer", "buffer", buffer);
   this->sum_ += local_sum;
+  file.close();  // Close file after writing
 }
 
 void SoundLevelMeterSensorEq::reset() {
