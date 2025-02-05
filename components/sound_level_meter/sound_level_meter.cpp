@@ -205,6 +205,14 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 
 /* SoundLevelMeterSensorEq */
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
+  ESP_LOGD("SoundLevelMeterSensorEq", "Buffer size: %d", buffer.size());
+  
+  std::string buffer_log = "Buffer contents: ";
+  for (const auto &val : buffer) {
+    buffer_log += std::to_string(val) + " ";
+  }
+  ESP_LOGD("SoundLevelMeterSensorEq", "%s", buffer_log.c_str());
+
   float local_sum = 0;
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
