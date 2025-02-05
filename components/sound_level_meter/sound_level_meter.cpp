@@ -211,12 +211,8 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 
 /* SoundLevelMeterSensorEq */
 
+//sound level meter need to make change to save file
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
-  // as adding small floating point numbers with large ones might lead
-  // to precision loss, we first accumulate local sum for entire buffer
-  // and only in the end add it to global sum which could become quite large
-  // for large accumulating periods (like 1 hour), therefore global sum (this->sum_)
-  // is of type double
   float local_sum = 0;
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
@@ -230,6 +226,7 @@ void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
       local_sum = 0;
     }
   }
+  ESP_LOGD("buffer", "buffer", buffer);
   this->sum_ += local_sum;
 }
 
