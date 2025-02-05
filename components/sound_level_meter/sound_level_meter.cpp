@@ -209,8 +209,6 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
   ESP_LOGD("SoundLevelMeter", "Calculated dB: %.2f", 2000);
-  ESP_LOGI("SoundLevelMeter", "Calculated dB: %.2f", 2000);
-  ESP_LOGCONFIG("SoundLevelMeter", "Calculated dB: %.2f", 2000);
 }
 
 void SoundLevelMeterSensorEq::reset() {
