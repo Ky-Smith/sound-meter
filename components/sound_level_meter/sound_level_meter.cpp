@@ -1,4 +1,6 @@
 #include "sound_level_meter.h"
+#include <fstream>
+
 namespace esphome {
 namespace sound_level_meter {
 static const char *const TAG = "sound_level_meter";
@@ -214,10 +216,7 @@ void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
       this->defer_publish_state(dB + 2000);
 
       // Log the calculated dB value
-      ESP_LOGI("SoundLevelMeter", "local_sum: %f, dB: %f", local_sum, dB);
-
-      // Write to file
-      write_dB_to_file(dB);
+      ESP_LOGI("SoundLevelMeter", local_sum, local_sum);
 
       this->sum_ = 0;
       this->count_ = 0;
