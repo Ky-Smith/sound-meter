@@ -1,5 +1,4 @@
 #include "sound_level_meter.h"
-#include "SPIFFS.h"  // Include the SPIFFS library
 namespace esphome {
 namespace sound_level_meter {
 static const char *const TAG = "sound_level_meter";
