@@ -205,7 +205,7 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 
 /* SoundLevelMeterSensorEq */
 
-//sound level meter need to make change to save file
+/* sound level meter need to make change to save file */
 
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
   float local_sum = 0;
