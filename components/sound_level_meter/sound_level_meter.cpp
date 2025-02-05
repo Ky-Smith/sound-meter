@@ -206,31 +206,27 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 /* SoundLevelMeterSensorEq */
 
 //sound level meter need to make change to save file
-void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
-  std::ofstream file("buffer_output.txt", std::ios::app);  // Open file in append mode
-  if (!file) {
-    return;  // Handle file open failure
-  }
 
+void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
   float local_sum = 0;
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
     this->count_++;
 
-    // Write the buffer value to the file
-    file << buffer[i] << "\n";
-
     if (this->count_ == this->update_samples_) {
       float dB = 10 * log10((sum_ + local_sum) / count_);
       dB = this->adjust_dB(dB);
       this->defer_publish_state(dB + 2000);
+
+      // Log the calculated dB value
+      ESP_LOGD("SoundLevelMeter", "Calculated dB: %.2f", dB);
+
       this->sum_ = 0;
       this->count_ = 0;
       local_sum = 0;
     }
   }
   this->sum_ += local_sum;
-  file.close();  // Close file after writing
 }
 
 void SoundLevelMeterSensorEq::reset() {
