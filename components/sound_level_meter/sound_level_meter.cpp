@@ -203,23 +203,21 @@ float SoundLevelMeterSensor::adjust_dB(float dB, bool is_rms) {
 }
 
 /* SoundLevelMeterSensorEq */
+#include "esphome/core/log.h"
+
 void SoundLevelMeterSensorEq::process(std::vector<float> &buffer) {
   float local_sum = 0;
   for (int i = 0; i < buffer.size(); i++) {
     local_sum += buffer[i] * buffer[i];
     this->count_++;
 
+    // Log buffer values to ESPHome logs (visible in HA)
+    ESP_LOGD("sound_level_meter", "Buffer[%d]: %f", i, buffer[i]);
+
     if (this->count_ == this->update_samples_) {
       float dB = 10 * log10((sum_ + local_sum) / count_);
       dB = this->adjust_dB(dB);
       this->defer_publish_state(dB + 2000);
-
-      // Log the calculated dB value
-      ESP_LOGI("SoundLevelMeter", "local_sum: %f, dB: %f", local_sum, dB);
-
-      // Write to file
-      write_dB_to_file(dB);
-
       this->sum_ = 0;
       this->count_ = 0;
       local_sum = 0;
